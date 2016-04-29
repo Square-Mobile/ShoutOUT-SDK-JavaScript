@@ -1,10 +1,132 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Basic Sample</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+          integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+    <!-- Custom styles for this template -->
+    <link href="css/signin.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
 </head>
 <body>
+<div class="container">
 
+    <form class="form-signin" id="signinForm">
+        <h2 class="form-signin-heading">Create User</h2>
+        <label for="inputName" class="sr-only">Name</label>
+        <input type="text" id="inputName" class="form-control" placeholder="Name" required autofocus>
+        <label for="inputMobile" class="sr-only">Mobile Number</label>
+        <input type="text" id="inputMobile" class="form-control" placeholder="Mobile Number" required>
+        <label for="inputEmail" class="sr-only">Email address</label>
+        <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
+    </form>
+
+    <form class="form-signin" id="eventForm">
+        <h2 class="form-signin-heading">Submit Activity</h2>
+        <label for="activityName" class="sr-only">Activity Name</label>
+        <input type="text" id="activityName" class="form-control" value="PremiumPaid" placeholder="Name" required autofocus>
+        <label for="activityMobile" class="sr-only">Mobile Number</label>
+        <input type="text" id="activityMobile" class="form-control" placeholder="Mobile Number" required>
+        <label for="policyNo" class="sr-only">Policy Number</label>
+        <input type="text" id="policyNo" class="form-control" placeholder="Policy Number" required>
+        <label for="bill" class="sr-only">Policy Number</label>
+        <input type="number" id="bill" class="form-control" placeholder="Amount" required>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
+    </form>
+
+</div> <!-- /container -->
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+        integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+        crossorigin="anonymous"></script>
+
+<!-- ShoutOUT SDK -->
+<script type="text/javascript" src="lib/axios/dist/axios.standalone.js"></script>
+<script type="text/javascript" src="lib/CryptoJS/rollups/hmac-sha256.js"></script>
+<script type="text/javascript" src="lib/CryptoJS/rollups/sha256.js"></script>
+<script type="text/javascript" src="lib/CryptoJS/components/hmac.js"></script>
+<script type="text/javascript" src="lib/CryptoJS/components/enc-base64.js"></script>
+<script type="text/javascript" src="lib/url-template/url-template.js"></script>
+<script type="text/javascript" src="lib/apiGatewayCore/sigV4Client.js"></script>
+<script type="text/javascript" src="lib/apiGatewayCore/apiGatewayClient.js"></script>
+<script type="text/javascript" src="lib/apiGatewayCore/simpleHttpClient.js"></script>
+<script type="text/javascript" src="lib/apiGatewayCore/utils.js"></script>
+<script type="text/javascript" src="apigClient.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        const API_KEY = '';
+        const ACCESS_KEY = '';
+        const SECRET_KEY = '';
+
+        var apigClient = apigClientFactory.newClient({
+            accessKey: ACCESS_KEY,
+            secretKey: SECRET_KEY,
+            apiKey: API_KEY,
+            'x-api-key': API_KEY
+        });
+
+        $("#signinForm").submit(function () {
+            var name = $('#inputName').val();
+            var mobile = $('#inputMobile').val();
+            var email = $('#inputEmail').val();
+
+            var user = {
+                'name': {'s': name},
+                'mobile_number': {'s': mobile},
+                'email': {'s': email}
+            };
+
+            apigClient.contactsListPut({'x-api-key':API_KEY}, [user]).then(function (result) {
+                console.log(result);
+            }).catch(function (result) {
+                console.log(result);
+            });
+
+            return false;
+        });
+
+        $("#eventForm").submit(function () {
+            var activityName = $('#activityName').val();
+            var activityMobile = $('#activityMobile').val();
+            var policyNo = $('#policyNo').val();
+            var bill = $('#bill').val();
+
+            var activityRecord = {
+                mobile_number: activityMobile,
+                activity_name: activityName,
+                activity_data: {
+                    policy_no: policyNo,
+                    bill: bill
+                }
+            };
+
+            apigClient.activitiesRecordsPost({'x-api-key':API_KEY}, activityRecord).then(function (result) {
+                console.log(result);
+            }).catch(function (result) {
+                console.log(result);
+            });
+
+            return false;
+        });
+    });
+</script>
 </body>
 </html>
